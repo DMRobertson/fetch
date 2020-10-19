@@ -227,7 +227,7 @@
         the proxy-pollyfill is unable to proxy an attribute unless it exists
         on the object before the Proxy is created. This change ensures
         Response.bodyUsed exists on the instance, while maintaining the
-        semantic of setting Request.bodyUsed in the constructor before
+        semantic of setting RequestPolyfill.bodyUsed in the constructor before
         _initBody is called.
       */
       this.bodyUsed = this.bodyUsed;
@@ -341,15 +341,15 @@
     return methods.indexOf(upcased) > -1 ? upcased : method
   }
 
-  function Request(input, options) {
-    if (!(this instanceof Request)) {
+  function RequestPolyfill(input, options) {
+    if (!(this instanceof RequestPolyfill)) {
       throw new TypeError('Please use the "new" operator, this DOM object constructor cannot be called as a function.')
     }
 
     options = options || {};
     var body = options.body;
 
-    if (input instanceof Request) {
+    if (input instanceof RequestPolyfill) {
       if (input.bodyUsed) {
         throw new TypeError('Already read')
       }
@@ -399,8 +399,8 @@
     }
   }
 
-  Request.prototype.clone = function() {
-    return new Request(this, {body: this._bodyInit})
+  RequestPolyfill.prototype.clone = function() {
+    return new RequestPolyfill(this, {body: this._bodyInit})
   };
 
   function decode(body) {
@@ -443,7 +443,7 @@
     return headers
   }
 
-  Body.call(Request.prototype);
+  Body.call(RequestPolyfill.prototype);
 
   function Response(bodyInit, options) {
     if (!(this instanceof Response)) {
@@ -505,7 +505,7 @@
 
   function fetch(input, init) {
     return new Promise(function(resolve, reject) {
-      var request = new Request(input, init);
+      var request = new RequestPolyfill(input, init);
 
       if (request.signal && request.signal.aborted) {
         return reject(new exports.DOMException('Aborted', 'AbortError'))
@@ -606,12 +606,16 @@
   if (!global.fetch) {
     global.fetch = fetch;
     global.Headers = Headers;
-    global.Request = Request;
+    if (!global.Request) {
+      global.Request = RequestPolyfill;
+    } else {
+      global.RequestPolyfill = RequestPolyfill;
+    }
     global.Response = Response;
   }
 
   exports.Headers = Headers;
-  exports.Request = Request;
+  exports.RequestPolyfill = RequestPolyfill;
   exports.Response = Response;
   exports.fetch = fetch;
 
