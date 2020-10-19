@@ -1,6 +1,6 @@
 {
   "name": "fetch",
-  "main": "fetch.js",
+  "main": "dist/fetch.umd.js",
   "ignore": [
     ".*",
     "*.md",
