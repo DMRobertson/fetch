@@ -1,3 +1,15 @@
+# About
+
+A fork of [github's `fetch` polyfill](https://github.com/github/fetch) with two changes:
+
+* Include `fetch.umd.js` in the repository, so that `bower` can fetch it.
+* Give the [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) object another name so that we don't conflict with [MooTools' `Request`](https://mootools.net/core/docs/1.6.0/Request/Request).
+
+These changes make me feel a little dirty, since
+
+* Bower is maintained but not recommended for new projects, and
+* MooTools appears unmaintained.
+
 # window.fetch polyfill
 
 The `fetch()` function is a Promise-based mechanism for programmatically making
